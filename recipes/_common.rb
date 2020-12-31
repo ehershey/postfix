@@ -30,7 +30,11 @@ end
 
 package 'procmail' if node['postfix']['use_procmail']
 
+service_name = 'postfix'
+
 case node['platform_family']
+when 'mac_os_x'
+  service_name = 'postfix.master'
 when 'rhel', 'fedora', 'amazon'
   service 'sendmail' do
     action :nothing
@@ -190,6 +194,7 @@ end
 end
 
 service 'postfix' do
+  service_name service_name
   supports status: true, restart: true, reload: true
   action [:enable, :start]
 end
